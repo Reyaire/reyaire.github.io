@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Countdown – Tage · Stunden · Minuten</title>
+<style>
+:root {
+--bg: #0b1220;
+--card: #111a2b;
+--text: #e6eefc;
+--muted: #9fb3d1;
+--accent: #6aa7ff;
+--danger: #ff6a6a;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+background: radial-gradient(1200px 800px at 20% -10%, #12203a 0%, var(--bg) 60%);
+color: var(--text);
+display: grid; place-items: center; padding: 24px;
+}
+.wrap { width: min(980px, 100%); display: grid; gap: 20px; }
+header { text-align: center; }
+h1 { margin: 0; font-size: clamp(1.6rem, 2.5vw + 1rem, 2.6rem); letter-spacing: 0.5px; }
+p.lead { margin: 6px 0 0; color: var(--muted); }
+
+
+.card { background: color-mix(in oklab, var(--card), #000 8%); border: 1px solid color-mix(in oklab, var(--card), #fff 8%);
+border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+
+.unit { text-align: center; padding: 18px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.2));
+border: 1px solid rgba(255,255,255,.06); }
+.value { font-variant-numeric: tabular-nums; font-size: clamp(2.2rem, 6vw + .5rem, 4.2rem); font-weight: 700; line-height: 1; }
+.label { margin-top: 6px; color: var(--muted); font-size: .95rem; letter-spacing: .3px; }
+
+
+.controls { display: grid; gap: 12px; align-items: center; grid-template-columns: 1fr auto; }
+.row { display: grid; gap: 12px; grid-template-columns: 1fr auto auto; }
+input[type="datetime-local"] { width: 100%; padding: 12px 14px; background: #0f1726; border: 1px solid rgba(255,255,255,.12);
+color: var(--text); border-radius: 12px; outline: none; font-size: 0.98rem; }
+input[type="text"] { width: 100%; padding: 12px 14px; background: #0f1726; border: 1px solid rgba(255,255,255,.12);
+color: var(--text); border-radius: 12px; outline: none; font-size: 0.98rem; }
+button { padding: 12px 16px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(180deg, #17325c, #0d2442);
+color: var(--text); border-radius: 12px; cursor: pointer; font-weight: 600; letter-spacing: .3px; }
+button.secondary { background: transparent; }
+.hint { color: var(--muted); font-size: .9rem; }
+
+
+footer { text-align: center; color: var(--muted); font-size: .9rem; }
+.ok { color: var(--accent); }
+.bad { color: var(--danger); }
+
+
+@media (max-width: 640px) {
+.grid { grid-template-columns: 1fr; }
+.row { grid-template-columns: 1fr; }
+.controls { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<h1>Countdown</h1>
+<p class="lead">Zählt präzise <strong>Tage</strong>, <strong>Stunden</strong> und <strong>Minuten</strong> bis zu deinem Zielzeitpunkt.</p>
+</header>
+
+
+<section class="card" aria-label="Zielzeitpunkt setzen">
+<div class="controls">
+<div class="row">
+<input id="target" type="datetime-local" aria-label="Zielzeitpunkt" />
+<button id="setBtn" title="Ziel übernehmen">Übernehmen</button>
+<button id="nowPlusBtn" class="secondary" title="+1 Stunde ab jetzt">+1h ab jetzt</button>
+</div>
+<div class="hint" id="tzInfo">Zeitzone: wird lokal im Browser interpretiert.</div>
+</div>
+</section>
+
+
+<section class="card" aria-live="polite" aria-atomic="true">
+<div class="grid">
+<div class="unit" aria-label="Tage">
+<div class="value" id="days">0</div>
+<div class="label">Tage</div>
+</div>
+<div class="unit" aria-label="Stunden">
+<div class="value" id="hours">0</div>
+<div class="label">Stunden</div>
+</div>
+<div class="unit" aria-label="Minuten">
+<div class="value" id="minutes">0</div>
+<div class="label">Minuten</div>
+</div>
+</div>
+<p class="hint" id="status" style="margin:12px 4px 0"></p>
+</section>
+
+
+<footer>
+<span>© <span id="year"></span> Countdown</span>
+</footer>
+</main>
+
+
+<script>
+</html>
