@@ -3,118 +3,106 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Countdown – Tage · Stunden · Minuten · Sekunden</title>
+  <title>Spiele‑Abend Countdown</title>
   <style>
     :root {
-      --bg: #0b1220;
-      --card: #111a2b;
+      --highlight-orange: #FF6600;
+      --primary-green: #45DC6B;
+      --primary-blue: #004874;
+      --dark-gray: #212529;
       --text: #e6eefc;
-      --muted: #9fb3d1;
-      --accent: #6aa7ff;
-      --danger: #ff6a6a;
+      --bg: #0b1220;
+      --card-bg: #112233;
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { height: 100%; margin: 0; padding: 0; }
     body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1200px 800px at 20% -10%, #12203a 0%, var(--bg) 60%);
+      font-family: system-ui, sans-serif;
+      background: var(--dark-gray);
       color: var(--text);
-      display: grid; place-items: center; padding: 24px;
+      display: grid; place-items: center;
+      padding: 20px;
     }
-    .wrap { width: min(980px, 100%); display: grid; gap: 20px; }
-    header { text-align: center; }
-    h1 { margin: 0; font-size: clamp(1.6rem, 2.5vw + 1rem, 2.6rem); letter-spacing: 0.5px; }
-    p.lead { margin: 6px 0 0; color: var(--muted); }
-
-    .card { background: color-mix(in oklab, var(--card), #000 8%); border: 1px solid color-mix(in oklab, var(--card), #fff 8%);
-            border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-
-    .unit { text-align: center; padding: 18px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.2));
-            border: 1px solid rgba(255,255,255,.06); }
-    .value { font-variant-numeric: tabular-nums; font-size: clamp(2.2rem, 6vw + .5rem, 4.2rem); font-weight: 700; line-height: 1; }
-    .label { margin-top: 6px; color: var(--muted); font-size: .95rem; letter-spacing: .3px; }
-
-    .controls { display: grid; gap: 12px; align-items: center; grid-template-columns: 1fr auto; }
-    .row { display: grid; gap: 12px; grid-template-columns: 1fr auto auto; }
-    input[type="datetime-local"] { width: 100%; padding: 12px 14px; background: #0f1726; border: 1px solid rgba(255,255,255,.12);
-      color: var(--text); border-radius: 12px; outline: none; font-size: 0.98rem; }
-    button { padding: 12px 16px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(180deg, #17325c, #0d2442);
-      color: var(--text); border-radius: 12px; cursor: pointer; font-weight: 600; letter-spacing: .3px; }
-    button.secondary { background: transparent; }
-    .hint { color: var(--muted); font-size: .9rem; }
-
-    footer { text-align: center; color: var(--muted); font-size: .9rem; }
-    .ok { color: var(--accent); }
-    .bad { color: var(--danger); }
-
-    @media (max-width: 640px) {
-      .grid { grid-template-columns: 1fr 1fr; }
-      .row { grid-template-columns: 1fr; }
-      .controls { grid-template-columns: 1fr; }
+    .wrap { width: min(900px, 100%); text-align: center; }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin: 0 0 20px;
+      color: var(--primary-blue);
+    }
+    .countdown-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .unit {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .value {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: bold;
+      color: var(--primary-green);
+    }
+    .label {
+      margin-top: 8px;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .target-display {
+      font-size: 1.8rem;
+      color: var(--highlight-orange);
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .status {
+      font-size: 1.3rem;
+      color: var(--primary-blue);
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    footer {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <h1>Spiele-Abend Countdown</h1>
-      <p class="lead">Zählt präzise <strong>Tage</strong>, <strong>Stunden</strong>, <strong>Minuten</strong> und <strong>Sekunden</strong> bis zum nächsten Spiele-Abend</p>
-    </header>
-
-    <section class="card" aria-label="Zielzeitpunkt setzen">
-      <div class="controls">
-        <div class="row">
-          <input id="target" type="datetime-local" aria-label="Zielzeitpunkt" />
-          <button id="setBtn" title="Ziel übernehmen">Übernehmen</button>
-          <button id="nowPlusBtn" class="secondary" title="+1 Stunde ab jetzt">+1h ab jetzt</button>
-        </div>
-        <div class="hint" id="tzInfo">Zeitzone: wird lokal im Browser interpretiert.</div>
-      </div>
-    </section>
-
-    <section class="card" aria-live="polite" aria-atomic="true">
+  <div class="wrap">
+    <h1>Spiele‑Abend Countdown</h1>
+    <div class="countdown-card">
+      <div id="targetDisplay" class="target-display"></div>
       <div class="grid">
-        <div class="unit" aria-label="Tage">
-          <div class="value" id="days">0</div>
-          <div class="label">Tage</div>
-        </div>
-        <div class="unit" aria-label="Stunden">
-          <div class="value" id="hours">0</div>
-          <div class="label">Stunden</div>
-        </div>
-        <div class="unit" aria-label="Minuten">
-          <div class="value" id="minutes">0</div>
-          <div class="label">Minuten</div>
-        </div>
-        <div class="unit" aria-label="Sekunden">
-          <div class="value" id="seconds">0</div>
-          <div class="label">Sekunden</div>
-        </div>
+        <div class="unit"><div class="value" id="days">0</div><div class="label">Tage</div></div>
+        <div class="unit"><div class="value" id="hours">0</div><div class="label">Stunden</div></div>
+        <div class="unit"><div class="value" id="minutes">0</div><div class="label">Minuten</div></div>
+        <div class="unit"><div class="value" id="seconds">0</div><div class="label">Sekunden</div></div>
       </div>
-      <p class="hint" id="status" style="margin:12px 4px 0"></p>
-    </section>
-
-    <footer>
-      <span>© <span id="year"></span> ChatGPT</span>
-    </footer>
-  </main>
+      <div id="status" class="status"></div>
+    </div>
+    <footer>© 2025 ChatGPT</footer>
+  </div>
 
   <script>
+    // ===============================
+    // Zielzeitpunkt einstellen (ISO oder klassische Schreibweise)
+    // ===============================
+    const TARGET_DATE = new Date("2025-08-31T20:30:00"); // Beispiel
+
     function pad(n) { return String(n).padStart(2, '0'); }
-    function toLocalDateFromInput(val) {
-      if (!val) return null;
-      const [d, t = '00:00'] = val.split('T');
-      const [y, m, day] = d.split('-').map(Number);
-      const [hh, mm] = t.split(':').map(Number);
-      return new Date(y, (m || 1) - 1, day || 1, hh || 0, mm || 0, 0, 0);
-    }
-    function formatTarget(dt) {
-      if (!dt) return '–';
+    function formatDate(dt) {
       return dt.toLocaleString(undefined, {
         year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit'
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
       });
     }
 
@@ -123,86 +111,47 @@
     const elMinutes = document.getElementById('minutes');
     const elSeconds = document.getElementById('seconds');
     const elStatus = document.getElementById('status');
-    const elTarget = document.getElementById('target');
-    const setBtn = document.getElementById('setBtn');
-    const plusBtn = document.getElementById('nowPlusBtn');
-    const tzInfo = document.getElementById('tzInfo');
-    const nowTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'lokal';
-    tzInfo.textContent = `Zeitzone: ${nowTz} (interpretiert als lokale Zeit, kein UTC)`;
-    document.getElementById('year').textContent = new Date().getFullYear();
+    const elTargetDisplay = document.getElementById('targetDisplay');
 
-    let targetDate = null;
+    elTargetDisplay.textContent = "Zielzeitpunkt: " + formatDate(TARGET_DATE);
+
     let timer = null;
-
-    (function initDefault() {
-      const now = new Date();
-      const def = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0);
-      elTarget.value = `${def.getFullYear()}-${pad(def.getMonth()+1)}-${pad(def.getDate())}T${pad(def.getHours())}:${pad(def.getMinutes())}`;
-      applyTargetFromInput();
-    })();
-
-    function applyTargetFromInput() {
-      const parsed = toLocalDateFromInput(elTarget.value);
-      if (!parsed || isNaN(parsed.getTime())) {
-        elStatus.innerHTML = '<span class="bad">Bitte gültiges Datum/Zeit wählen.</span>';
-        return;
-      }
-      targetDate = parsed;
-      elStatus.innerHTML = `Zielzeitpunkt: <span class="ok">${formatTarget(targetDate)}</span>`;
-      restartTimer();
-      try { localStorage.setItem('countdown_target', elTarget.value); } catch (e) {}
-    }
-
-    function setNowPlus(hours) {
-      const now = new Date();
-      const t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()+hours, now.getMinutes(), 0, 0);
-      elTarget.value = `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}T${pad(t.getHours())}:${pad(t.getMinutes())}`;
-      applyTargetFromInput();
-    }
 
     function computeParts(diffMs) {
       if (diffMs <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, done: true };
       const totalSeconds = Math.floor(diffMs / 1000);
-      const days = Math.floor(totalSeconds / (60 * 60 * 24));
-      const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / 3600);
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
       return { days, hours, minutes, seconds, done: false };
     }
 
     function update() {
-      if (!targetDate) return;
       const now = new Date();
-      const diff = targetDate - now;
+      const diff = TARGET_DATE - now;
       const p = computeParts(diff);
+
       elDays.textContent = p.days;
       elHours.textContent = p.hours;
       elMinutes.textContent = p.minutes;
       elSeconds.textContent = p.seconds;
+
       if (p.done) {
-        elStatus.innerHTML = '<span class="ok">🎉 Ziel erreicht!</span>';
+        elStatus.textContent = "🎉 Ziel erreicht!";
         clearInterval(timer);
+      } else {
+        elStatus.textContent = "";
       }
     }
 
-    function restartTimer() {
+    function startTimer() {
       if (timer) clearInterval(timer);
       update();
       timer = setInterval(update, 1000);
     }
 
-    try {
-      const saved = localStorage.getItem('countdown_target');
-      if (saved) {
-        elTarget.value = saved;
-        applyTargetFromInput();
-      }
-    } catch (e) {}
-
-    setBtn.addEventListener('click', applyTargetFromInput);
-    plusBtn.addEventListener('click', () => setNowPlus(1));
-    elTarget.addEventListener('keydown', (e) => { if (e.key === 'Enter') applyTargetFromInput(); });
-    elTarget.addEventListener('change', applyTargetFromInput);
+    startTimer();
   </script>
 </body>
 </html>
